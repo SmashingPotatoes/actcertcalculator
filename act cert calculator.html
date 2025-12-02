@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Median Date & Payment Calculator</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        input { margin: 5px; }
+        .section { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h2>Median Date Calculator</h2>
+    <label for="startDate">Start Date (ddmmyy): </label>
+    <input type="text" id="startDate" placeholder="e.g., 011225"><br>
+
+    <label for="endDate">End Date (ddmmyy): </label>
+    <input type="text" id="endDate" placeholder="e.g., 311225"><br>
+
+    <h3>Median Date: <span id="medianDate"></span></h3>
+
+    <div class="section">
+        <h2>Payment Calculator</h2>
+        <label for="amount">Amount per Payment ($): </label>
+        <input type="number" id="amount" placeholder="e.g., 100"><br>
+
+        <label for="payments">Number of Payments: </label>
+        <input type="number" id="payments" placeholder="e.g., 12"><br>
+
+        <h3>Total Amount: $<span id="totalAmount"></span></h3>
+    </div>
+
+    <script>
+        // --- Median Date Calculation ---
+        function parseDate(ddmmyy) {
+            const day = parseInt(ddmmyy.slice(0, 2));
+            const month = parseInt(ddmmyy.slice(2, 4)) - 1; // JS months are 0-based
+            const year = 2000 + parseInt(ddmmyy.slice(4, 6)); // Assuming 20xx
+            return new Date(year, month, day);
+        }
+
+        function formatDate(date) {
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = String(date.getFullYear()).slice(-2);
+            return `${day}${month}${year}`;
+        }
+
+        function calculateMedian() {
+            const startInput = document.getElementById('startDate').value;
+            const endInput = document.getElementById('endDate').value;
+            const resultSpan = document.getElementById('medianDate');
+
+            if (startInput.length === 6 && endInput.length === 6) {
+                const startDate = parseDate(startInput);
+                const endDate = parseDate(endInput);
+
+                if (!isNaN(startDate) && !isNaN(endDate)) {
+                    const medianTime = (startDate.getTime() + endDate.getTime()) / 2;
+                    const medianDate = new Date(medianTime);
+                    resultSpan.textContent = formatDate(medianDate);
+                } else {
+                    resultSpan.textContent = "Invalid date format.";
+                }
+            } else {
+                resultSpan.textContent = "";
+            }
+        }
+
+        document.getElementById('startDate').addEventListener('input', calculateMedian);
+        document.getElementById('endDate').addEventListener('input', calculateMedian);
+
+        // --- Payment Calculation ---
+        function calculateTotal() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const payments = parseInt(document.getElementById('payments').value);
+            const totalSpan = document.getElementById('totalAmount');
+
+            if (!isNaN(amount) && !isNaN(payments)) {
+                const total = amount * payments;
+                totalSpan.textContent = total.toFixed(2);
+            } else {
+                totalSpan.textContent = "";
+            }
+        }
+
+        document.getElementById('amount').addEventListener('input', calculateTotal);
+        document.getElementById('payments').addEventListener('input', calculateTotal);
+    </script>
+</body>
+</html>
